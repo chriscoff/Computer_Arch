@@ -40,6 +40,10 @@ parser.add_argument(
     '--l2_size', 
     help = 'L2 cache size. Default: 256kB.'
 )
+parser.add_argument(
+    '--l3_size',
+    help = 'L3 cache size. Default: 1MB.'
+)
 
 # add arguments for selecting cache data latencies
 parser.add_argument(
@@ -59,6 +63,13 @@ parser.add_argument(
 parser.add_argument(
     '--fetch1_to_fetch2_forward_delay', 
     help = 'Forward cycle delay from Fetch1 to Fetch2.'
+)
+
+# add argument for including L3 Cache.
+parser.add_argument(
+    '--include_l3_cache',
+    default = False,
+    help = 'Determines whether the L3 cache should be included on not. Options: True | False. Default: False.'
 )
 
 # create options object
@@ -91,10 +102,27 @@ system.l2bus = L2XBar()
 # connect the processor's cache ports to the L2 Cache Bus
 system.processor.connectProcessor(system.l2bus)
 
-# create L2 cache and connect it to the L2 Cache Bus and the memory bus
+# create L2 cache and connect it to the L2 Cache Bus
 system.l2cache = L2Cache(options)
 system.l2cache.connectCPUSideBus(system.l2bus)
-system.l2cache.connectMemSideBus(system.membus)
+
+if options.include_l3_cache:
+
+    # create L3 Cache Bus
+    system.l3bus = L3XBar()
+
+    # connect L2 Cache Bus to the L3 Bus
+    system.l2cache.connectMemSideBus(system.l3bus)
+
+    # create L3 Cache and connect it to the L3 Bus and Memory
+    system.l3cache = L3Cache(options)
+    system.l3cache.connectCPUSideBus(system.l3bus)
+    system.l3cache.connectMemSideBus(system.membus)
+
+else:
+
+    # connect L2 Cache to the memory bus
+    system.l2cache.connectMemSideBus(system.membus)
 
 # For x86 only, make sure the interrupts are connected to the memory
 # Note: these are directly connected to the memory bus and are not cached

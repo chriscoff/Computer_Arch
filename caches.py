@@ -3,6 +3,8 @@
 # Import Libraries
 # --------------------------------------------------------------------------------
 from m5.objects import Cache
+from m5.objects import CoherentXBar
+from m5.objects import SnoopFilter
 
 # --------------------------------------------------------------------------------
 # L1 Cache
@@ -107,3 +109,47 @@ class L2Cache(Cache):
     # connects the memory side bus
     def connectMemSideBus(self, bus):
         self.mem_side = bus.cpu_side_ports
+
+# --------------------------------------------------------------------------------
+# L3 Cache
+# create an L3 Cache by extending the BaseCache class
+# --------------------------------------------------------------------------------
+class L3Cache(Cache):
+
+    # parameters
+    size = '1MB'
+    assoc = 64
+    tag_latency = 32
+    data_latency = 32
+    response_latency = 32
+    mshrs = 32
+    tgts_per_mshr = 24
+    write_buffers = 16
+
+    # constructor - sets the cache size
+    def __init__(self, options = None):
+        super(L3Cache, self).__init__()
+        if not options or not options.l3_size:
+            return
+        self.size = options.l3_size
+
+    # connects the CPU side bus
+    def connectCPUSideBus(self, bus):
+        self.cpu_side = bus.mem_side_ports
+
+    def connectMemSideBus(self, bus):
+        self.mem_side = bus.cpu_side_ports
+
+# --------------------------------------------------------------------------------
+# L3 Cache Bus
+# --------------------------------------------------------------------------------
+class L3XBar(CoherentXBar):
+
+    # parameters
+    # 256-bit crossbar by default
+    width = 32
+    frontend_latency = 1
+    forward_latency = 0
+    response_latency = 1
+    snoop_response_latency = 1
+    snoop_filter = SnoopFilter(lookup_latency = 0)
