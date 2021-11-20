@@ -16,8 +16,11 @@ class Processor(SubSystem):
     def __init__(self, options):
 
         super(Processor, self).__init__()
+
+        # grab relevant options
+        self._include_l3_cache = options.include_l3_cache
         
-        # Instatntiate CPU
+        # Instantiate CPU
         self.cpu = MinorCPU()
 
         # configure the CPU
@@ -41,11 +44,33 @@ class Processor(SubSystem):
         # create interrupt controller
         self.cpu.createInterruptController()
 
+        # create L2 and L3 Cache Buses
+        self.l2bus = L2XBar()
+        if self._include_l3_cache:
+            self.l3bus = L3XBar()
+
+        # connect L2 Cache to the processor
+        self.cpu.icache.connectBus(self.l2bus)
+        self.cpu.dcache.connectBus(self.l2bus)
+
+        # create L2 and L3 caches
+        self.l2cache = L2Cache(options)
+        if self._include_l3_cache:
+            self.l3cache = L3Cache(options)
+
+        # hook up L2 and L3 buses
+        self.l2cache.connectCPUSideBus(self.l2bus)
+        if self._include_l3_cache:
+            self.l2cache.connectMemSideBus(self.l3bus)
+            self.l3cache.connectCPUSideBus(self.l3bus)
+
     # Connect processor to a bus
     def connectProcessor(self, bus):
 
-        self.cpu.icache.connectBus(bus)
-        self.cpu.dcache.connectBus(bus)
+        if self._include_l3_cache:
+            self.l3cache.connectMemSideBus(bus)
+        else:
+            self.l2cache.connectMemSideBus(bus)
     
     # Connect interrupts to memory (x86 only)
     def connectInterruptsToMem(self, membus):

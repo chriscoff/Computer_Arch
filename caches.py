@@ -5,6 +5,7 @@
 from m5.objects import Cache
 from m5.objects import CoherentXBar
 from m5.objects import SnoopFilter
+from m5.objects import SubSystem
 
 # --------------------------------------------------------------------------------
 # L1 Cache

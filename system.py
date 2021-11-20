@@ -96,33 +96,8 @@ system.mem_ranges = [AddrRange('8GB')]
 # create the memory bus
 system.membus = SystemXBar()
 
-# create an L2 Cache bus
-system.l2bus = L2XBar()
-
-# connect the processor's cache ports to the L2 Cache Bus
-system.processor.connectProcessor(system.l2bus)
-
-# create L2 cache and connect it to the L2 Cache Bus
-system.l2cache = L2Cache(options)
-system.l2cache.connectCPUSideBus(system.l2bus)
-
-if options.include_l3_cache:
-
-    # create L3 Cache Bus
-    system.l3bus = L3XBar()
-
-    # connect L2 Cache Bus to the L3 Bus
-    system.l2cache.connectMemSideBus(system.l3bus)
-
-    # create L3 Cache and connect it to the L3 Bus and Memory
-    system.l3cache = L3Cache(options)
-    system.l3cache.connectCPUSideBus(system.l3bus)
-    system.l3cache.connectMemSideBus(system.membus)
-
-else:
-
-    # connect L2 Cache to the memory bus
-    system.l2cache.connectMemSideBus(system.membus)
+# connect the processor's cache ports to memory
+system.processor.connectProcessor(system.membus)
 
 # For x86 only, make sure the interrupts are connected to the memory
 # Note: these are directly connected to the memory bus and are not cached
@@ -141,12 +116,18 @@ system.mem_ctrl.port = system.membus.mem_side_ports
 # ---------------------------------------------------------------------------------
 # Add Power Modeling
 # ---------------------------------------------------------------------------------
-#adding power modeling for the CPU
-for cpu in system.descendants():
-    if not isinstance(cpu, m5.objects.BaseCPU):
-        continue
-    cpu.power_state.default_state = 'ON'
-    cpu.power_model = CpuPowerModel(cpu.path())
+# adding power modeling for the CPU
+system.processor.cpu.power_state.default_state = 'ON'
+system.processor.cpu.power_model = CpuPowerModel('system.processor.cpu')
+
+# add power modeling for the L2 Cache
+system.processor.l2cache.power_state.default_state = "ON"
+system.processor.l2cache.power_model = L2PowerModel('system.processor.l2cache')
+
+# add power modeling for the L3 Cache
+if options.include_l3_cache:
+    system.processor.l3cache.power_state.default_state = "ON"
+    system.processor.l3cache.power_model = L3PowerModel('system.processor.l3cache')
 
 # ---------------------------------------------------------------------------------
 # Run Binary File
