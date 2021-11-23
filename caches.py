@@ -15,7 +15,6 @@ from m5.objects import SubSystem
 class L1Cache(Cache):
 
     # parameters
-    assoc = 2
     tag_latency = 2
     response_latency = 2
     mshrs = 4
@@ -43,6 +42,7 @@ class L1ICache(L1Cache):
 
     # paramters
     size = '16kB'
+    assoc = 2
     data_latency = 2
 
     # constructor - sets cache size and data latency
@@ -55,6 +55,8 @@ class L1ICache(L1Cache):
                 self.size = options.l1i_size
             if options.l1i_data_latency:
                 self.data_latency = options.l1i_data_latency
+            if options.l1i_assoc:
+                self.assoc = options.l1i_assoc
 
     # connects the CPU to the L1 instruction cache
     def connectCPU(self, cpu):
@@ -68,14 +70,19 @@ class L1DCache(L1Cache):
 
     # paramters
     size = '64kB'
+    assoc = 2
     data_latency = 2
 
     # constructor - sets cache size
     def __init__(self, options = None):
+
         super(L1DCache, self).__init__(options)
-        if not options or not options.l1d_size:
-            return
-        self.size = options.l1d_size
+
+        if options:
+            if options.l1d_size:
+                self.size = options.l1d_size
+            if options.l1d_assoc:
+                self.assoc = options.l1d_assoc
 
     # connects a CPU to the L1 data cache
     def connectCPU(self, cpu):
@@ -98,10 +105,14 @@ class L2Cache(Cache):
 
     # constructor - sets cache size
     def __init__(self, options = None):
+
         super(L2Cache, self).__init__()
-        if not options or not options.l2_size:
-            return
-        self.size = options.l2_size
+
+        if options:
+            if options.l2_size:
+                self.size = options.l2_size
+            if options.l2_assoc:
+                self.assoc = options.l2_assoc
 
     # connects the CPU side bus
     def connectCPUSideBus(self, bus):
@@ -129,10 +140,14 @@ class L3Cache(Cache):
 
     # constructor - sets the cache size
     def __init__(self, options = None):
+        
         super(L3Cache, self).__init__()
-        if not options or not options.l3_size:
-            return
-        self.size = options.l3_size
+        
+        if options:
+            if options.l3_size:
+                self.size = options.l3_size
+            if options.l3_assoc:
+                self.assoc = assoc.l3_assoc
 
     # connects the CPU side bus
     def connectCPUSideBus(self, bus):

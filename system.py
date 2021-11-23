@@ -45,6 +45,24 @@ parser.add_argument(
     help = 'L3 cache size. Default: 1MB.'
 )
 
+# add arguments for selecting cache associativity
+parser.add_argument(
+    '--l1i_assoc',
+    help = 'L1 data cache associativity. Default: 2.'
+)
+parser.add_argument(
+    '--l1d_assoc',
+    help = 'L1 instruction cache associativity. Default: 2.'
+)
+parser.add_argument(
+    '--l2_assoc',
+    help = 'L2 cache associativity. Default: 8.'
+)
+parser.add_argument(
+    '--l3_assoc',
+    help = 'L3 cache associativity. Default: 64.'
+)
+
 # add arguments for selecting cache data latencies
 parser.add_argument(
     '--l1i_data_latency', 
