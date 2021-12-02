@@ -90,6 +90,24 @@ parser.add_argument(
     help = 'Determines whether the L3 cache should be included on not. Options: True | False. Default: False.'
 )
 
+# add arguments for selecting the pwer modeling equations for the CPU and
+# L2 and L3 caches.
+parser.add_argument(
+    '--cpu_pwr_eq',
+    default = 0,
+    help = 'Selects the equation to use for modeling the processor\'s power consumption. Input is a positive integer.'
+)
+parser.add_argument(
+    '--l2_pwr_eq',
+    default = 0,
+    help = 'Selects the equation to use for modeling the L2 cache\'s power consumption. Input is a positive integer.'
+)
+parser.add_argument(
+    '--l3_pwr_eq',
+    default = 0,
+    help = 'Selects the equation to use for modeling the L3 cache\'s power consumption. Input is a positive integer.'
+)
+
 # create options object
 options = parser.parse_args()
 
@@ -136,16 +154,16 @@ system.mem_ctrl.port = system.membus.mem_side_ports
 # ---------------------------------------------------------------------------------
 # adding power modeling for the CPU
 system.processor.cpu.power_state.default_state = 'ON'
-system.processor.cpu.power_model = CpuPowerModel('system.processor.cpu')
+system.processor.cpu.power_model = CpuPowerModel('system.processor.cpu', options)
 
 # add power modeling for the L2 Cache
 system.processor.l2cache.power_state.default_state = "ON"
-system.processor.l2cache.power_model = L2PowerModel('system.processor.l2cache')
+system.processor.l2cache.power_model = L2PowerModel('system.processor.l2cache', options)
 
 # add power modeling for the L3 Cache
 if options.include_l3_cache:
     system.processor.l3cache.power_state.default_state = "ON"
-    system.processor.l3cache.power_model = L3PowerModel('system.processor.l3cache')
+    system.processor.l3cache.power_model = L3PowerModel('system.processor.l3cache', options)
 
 # ---------------------------------------------------------------------------------
 # Run Binary File

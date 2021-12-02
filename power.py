@@ -11,15 +11,22 @@ from m5.objects import PowerModel
 # --------------------------------------------------------------------------
 class CpuPowerOn(MathExprPowerModel):
 
-    def __init__(self, cpu_path, **kwargs):
+    def __init__(self, cpu_path, options, **kwargs):
 
         super(CpuPowerOn, self).__init__(**kwargs)
 
-        # 2A per IPC and 3pA per cache miss. Then convert to Watts.
-        # dynamic power
-        self.dyn = 'voltage*(2*{}.ipc + 3*0.000000001*{}.dcache.overallMisses/simSeconds)'.format(cpu_path, cpu_path)
-        # static power
-        self.st = '4*temp'
+        # select the equation to use to model the processor's power consumption
+        if options.cpu_pwr_eq == 0:
+            # 2A per IPC and 3pA per cache miss. Then convert to Watts.
+            # dynamic power
+            self.dyn = 'voltage*(2*{}.ipc + 3*0.000000001*{}.dcache.overallMisses/simSeconds)'.format(cpu_path, cpu_path)
+            # static power
+            self.st = '4*temp'
+        elif options.cpu_pwr_eq == 1:
+            # TODO: remove 'pass' and place a different power modeling 
+            # equation here. If needed, create other if cases with different 
+            # equations in them.
+            pass
 
 # --------------------------------------------------------------------------
 # CPU Clock Gated Class
@@ -51,15 +58,15 @@ class CpuPowerOff(MathExprPowerModel):
 # --------------------------------------------------------------------------
 class CpuPowerModel(PowerModel):
 
-    def __init__(self, cpu_path, **kwargs):
+    def __init__(self, cpu_path, options, **kwargs):
 
         super(CpuPowerModel, self).__init__(**kwargs)
 
         self.pm = [
-            CpuPowerOn(cpu_path), # ON
-            CpuClkGated(),        # CLK_GATED
-            CpuSramRetention(),   # SRAM_RETENTION
-            CpuPowerOff()         # OFF
+            CpuPowerOn(cpu_path, options), # ON
+            CpuClkGated(),                 # CLK_GATED
+            CpuSramRetention(),            # SRAM_RETENTION
+            CpuPowerOff()                  # OFF
         ]
 
 # --------------------------------------------------------------------------
@@ -67,14 +74,21 @@ class CpuPowerModel(PowerModel):
 # --------------------------------------------------------------------------
 class L2PowerOn(MathExprPowerModel):
 
-    def __init__(self, l2_path, **kwargs):
+    def __init__(self, l2_path, options, **kwargs):
 
         super(L2PowerOn, self).__init__(**kwargs)
 
-        # Report L2 Cache overall accesses. The estimated power is converted
-        # to Watts and will vary based on the size of the cache.
-        self.dyn = '{}.overallAccesses*0.000018000'.format(l2_path)
-        self.st = '(voltage*3)/10'
+        # select the equation to use to model the L2 cache's power consumption
+        if options.l2_pwr_eq == 0:
+            # Report L2 Cache overall accesses. The estimated power is converted
+            # to Watts and will vary based on the size of the cache.
+            self.dyn = '{}.overallAccesses*0.000018000'.format(l2_path)
+            self.st = '(voltage*3)/10'
+        elif options.l2_pwr_eq == 1:
+            # TODO: remove 'pass' and place a different power modeling 
+            # equation here. If needed, create other if cases with different 
+            # equations in them.
+            pass
 
 # --------------------------------------------------------------------------
 # L2 Cache Clock Gated Class
@@ -106,16 +120,16 @@ class L2PowerOff(MathExprPowerModel):
 # --------------------------------------------------------------------------
 class L2PowerModel(PowerModel):
 
-    def __init__(self, l2_path, **kwargs):
+    def __init__(self, l2_path, options, **kwargs):
 
         super(L2PowerModel, self).__init__(**kwargs)
 
         # choose a power model for each power state
         self.pm = [
-            L2PowerOn(l2_path), # ON
-            L2ClockGated(),     # CLK_GATED
-            L2SramRetention(),  # SRAM_RETENTION
-            L2PowerOff()        # OFF
+            L2PowerOn(l2_path, options), # ON
+            L2ClockGated(),              # CLK_GATED
+            L2SramRetention(),           # SRAM_RETENTION
+            L2PowerOff()                 # OFF
         ]
 
 # --------------------------------------------------------------------------
@@ -123,14 +137,21 @@ class L2PowerModel(PowerModel):
 # --------------------------------------------------------------------------
 class L3PowerOn(MathExprPowerModel):
 
-    def __init__(self, l3_path, **kwargs):
+    def __init__(self, l3_path, options, **kwargs):
 
         super(L3PowerOn, self).__init__(**kwargs)
 
-        # Report L2 Cache overall accesses. The estimated power is converted
-        # to Watts and will vary based on the size of the cache.
-        self.dyn = '{}.overallAccesses*0.000018'.format(l3_path)
-        self.st = '(voltage*3)/10'
+        # select the equation to use to model the L3 cache's power consumption
+        if options.l3_pwr_eq == 0:
+            # Report L3 Cache overall accesses. The estimated power is converted
+            # to Watts and will vary based on the size of the cache.
+            self.dyn = '{}.overallAccesses*0.000018000'.format(l3_path)
+            self.st = '(voltage*3)/10'
+        elif options.l3_pwr_eq == 1:
+            # TODO: remove 'pass' and place a different power modeling 
+            # equation here. If needed, create other if cases with different 
+            # equations in them.
+            pass
 
 # --------------------------------------------------------------------------
 # L3 Cache Clock Gated Class
@@ -162,14 +183,14 @@ class L3PowerOff(MathExprPowerModel):
 # --------------------------------------------------------------------------
 class L3PowerModel(PowerModel):
 
-    def __init__(self, l3_path, **kwargs):
+    def __init__(self, l3_path, options, **kwargs):
 
         super(L3PowerModel, self).__init__(**kwargs)
 
         # choose a power model for each power state
         self.pm = [
-            L3PowerOn(l3_path), # ON
-            L3ClockGated(),     # CLK_GATED
-            L3SramRetention(),  # SRAM_RETENTION
-            L3PowerOff()        # OFF
+            L3PowerOn(l3_path, options), # ON
+            L3ClockGated(),              # CLK_GATED
+            L3SramRetention(),           # SRAM_RETENTION
+            L3PowerOff()                 # OFF
         ]
