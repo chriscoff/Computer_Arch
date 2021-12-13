@@ -128,7 +128,7 @@ echo ""
 # --------------------------------------------------------------------------
 echo "Running test 6 of 6"
 
-test5_dir="$project_dir/test6"
+test6_dir="$project_dir/test6"
 
 if [ ! -d "$test6_dir" ]
 then
