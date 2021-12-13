@@ -2,8 +2,8 @@
 
 void main()
 {
-    int n=100000;
-    int array1[100000];
+    int n=1000;
+    int array1[1000];
     int array_size=0;
     int j, i, k, temp;
 

@@ -10,6 +10,8 @@ from processor import *
 
 import argparse
 
+from data_extraction import *
+
 # --------------------------------------------------------------------------
 # Add Options
 # --------------------------------------------------------------------------
@@ -17,6 +19,9 @@ import argparse
 parser = argparse.ArgumentParser(
     description = 'A simple system with 2-level cache.'
 )
+
+# create empty list of CPU parameters for data extraction purposes
+parameters = [[], []]
 
 # add an argument for selecting the binary file.
 parser.add_argument(
@@ -27,46 +32,88 @@ parser.add_argument(
     help = 'Path to the binary to execute.'
 )
 
+# add an argument for naming the .csv files
+parser.add_argument(
+    '--csv_file_suffix',
+    default = '',
+    type = str,
+    help = 'String that is appended to the end of the .csv file names.'
+)
+
+# add an argument for a directory save loaction for the CSV files
+parser.add_argument(
+    '--csv_save_dir',
+    default = '',
+    type = str,
+    help = 'Location to save the CSV files containing the extracted data.'
+)
+
 # add arguments for selecting cache sizes
+parameters[0].append("L1 Instruction Cache Size")
 parser.add_argument(
     '--l1i_size', 
+    default = '16kB',
     help = 'L1 instruction cache size. Default: 16kB.'
 )
+parameters[0].append("L1 Data Cache Size")
 parser.add_argument(
-    '--l1d_size', 
+    '--l1d_size',
+    default = '64kB',
     help = 'L1 data cache size. Default: 64kB.'
 )
+parameters[0].append("L2 Cache Size")
 parser.add_argument(
-    '--l2_size', 
+    '--l2_size',
+    default = '256kB',
     help = 'L2 cache size. Default: 256kB.'
 )
+parameters[0].append("L3 Cache Size")
 parser.add_argument(
     '--l3_size',
+    default = '1MB',
     help = 'L3 cache size. Default: 1MB.'
 )
 
 # add arguments for selecting cache associativity
+parameters[0].append("L1 Instruction Cache Associativity")
 parser.add_argument(
     '--l1i_assoc',
+    default = 2,
     help = 'L1 data cache associativity. Default: 2.'
 )
+parameters[0].append("L1 Data Cache Associativity")
 parser.add_argument(
     '--l1d_assoc',
+    default = 2,
     help = 'L1 instruction cache associativity. Default: 2.'
 )
+parameters[0].append("L2 Cache Associativity")
 parser.add_argument(
     '--l2_assoc',
+    default = 8,
     help = 'L2 cache associativity. Default: 8.'
 )
+parameters[0].append("L3 Cache Associativity")
 parser.add_argument(
     '--l3_assoc',
+    default = 64,
     help = 'L3 cache associativity. Default: 64.'
 )
 
 # add arguments for selecting cache data latencies
+parameters[0].append("L1 Instruction Cache Data Latency")
 parser.add_argument(
     '--l1i_data_latency', 
+    default = 2,
     help = 'L1 instruction cache data latency. Default: 2'
+)
+
+# add argument for selecting the CPU type
+parameters[0].append("CPU Type")
+parser.add_argument(
+    '--cpu_type',
+    default = 'MinorCPU',
+    help = 'Selects the processor type.'
 )
 
 # add arguments for configuring the CPU
@@ -110,6 +157,20 @@ parser.add_argument(
 
 # create options object
 options = parser.parse_args()
+
+# place options in the parameter list
+parameters[1] = [
+    options.l1i_size,
+    options.l1d_size,
+    options.l2_size,
+    options.l3_size,
+    options.l1i_assoc,
+    options.l1d_assoc,
+    options.l2_assoc,
+    options.l3_assoc,
+    options.l1i_data_latency,
+    options.cpu_type
+]
 
 # --------------------------------------------------------------------------
 # Create Architecture
@@ -181,11 +242,32 @@ root = Root(full_system = False, system = system)
 m5.instantiate()
 
 # dump stats periodically
-m5.stats.periodicStatDump(m5.ticks.fromSeconds(0.1E-3))
+stats_dump_period = 0.1E-3
+m5.stats.periodicStatDump(m5.ticks.fromSeconds(stats_dump_period))
 
 # kick off simulation
 print('Beginning simulation!')
 exit_event = m5.simulate()
 
 # inspect state of the simulation after completion
-print('Exiting @ tick {} because {}'.format(m5.curTick(), exit_event.getCause()))
+exiting_tick = m5.curTick()
+print('Exiting @ tick {} because {}'.format(exiting_tick, exit_event.getCause()))
+
+# ---------------------------------------------------------------------------------
+# Extract Statistics
+# ---------------------------------------------------------------------------------
+# read statistics file
+print('Extracting statistics...')
+statistics = DataExtraction(exiting_tick, stats_dump_period)
+
+# create .csv file names
+cpu_power_filename = '{}/cpu_power_data_{}.csv'.format(options.csv_save_dir, options.csv_file_suffix)
+l2_cache_power_filename = '{}/l2_cache_power_data_{}.csv'.format(options.csv_save_dir, options.csv_file_suffix)
+if options.include_l3_cache:
+    l3_cache_power_filename = '{}/l3_cache_power_data_{}.csv'.format(options.csv_save_dir, options.csv_file_suffix)
+
+# extract power modeling data
+statistics.ExtractCpuPowerData(parameters, cpu_power_filename)
+statistics.ExtractL2CachePowerData(parameters, l2_cache_power_filename)
+if options.include_l3_cache:
+    statistics.ExtractL3CachePowerData(parameters, l3_cache_power_filename)

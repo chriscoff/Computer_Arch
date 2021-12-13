@@ -21,7 +21,10 @@ class Processor(SubSystem):
         self._include_l3_cache = options.include_l3_cache
         
         # Instantiate CPU
-        self.cpu = MinorCPU()
+        if options.cpu_type == 'MinorCPU':
+            self.cpu = MinorCPU()
+        elif options.cpu_type == 'O3CPU':
+            self.cpu = O3CPU()
 
         # configure the CPU
         if options.thread_policy:

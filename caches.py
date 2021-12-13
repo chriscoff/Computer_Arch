@@ -147,7 +147,7 @@ class L3Cache(Cache):
             if options.l3_size:
                 self.size = options.l3_size
             if options.l3_assoc:
-                self.assoc = assoc.l3_assoc
+                self.assoc = options.l3_assoc
 
     # connects the CPU side bus
     def connectCPUSideBus(self, bus):
