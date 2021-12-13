@@ -73,15 +73,15 @@ then
     mkdir "$test3_dir"
 fi
 
-build/ARM/gem5.opt $project_dir/system.py --binary=$project_dir/stress_test_ARM --l1i_cache_size=4kB  --l1d_cache_size=16kB  --l2_cache_size=256kB --csv_file_suffix=L1_16kB  --csv_save_dir=$test3_dir
-build/ARM/gem5.opt $project_dir/system.py --binary=$project_dir/stress_test_ARM --l1i_cache_size=8kB  --l1d_cache_size=32kB  --l2_cache_size=256kB --csv_file_suffix=L1_32kB  --csv_save_dir=$test3_dir
-build/ARM/gem5.opt $project_dir/system.py --binary=$project_dir/stress_test_ARM --l1i_cache_size=16kB --l1d_cache_size=64kB  --l2_cache_size=256kB --csv_file_suffix=L1_64kB  --csv_save_dir=$test3_dir
-build/ARM/gem5.opt $project_dir/system.py --binary=$project_dir/stress_test_ARM --l1i_cache_size=32kB --l1d_cache_size=128kB --l2_cache_size=256kB --csv_file_suffix=L1_128kB --csv_save_dir=$test3_dir
+build/ARM/gem5.opt $project_dir/system.py --binary=$project_dir/stress_test_ARM --l1i_size=4kB  --l1d_size=16kB  --l2_size=256kB --csv_file_suffix=L1_16kB  --csv_save_dir=$test3_dir
+build/ARM/gem5.opt $project_dir/system.py --binary=$project_dir/stress_test_ARM --l1i_size=8kB  --l1d_size=32kB  --l2_size=256kB --csv_file_suffix=L1_32kB  --csv_save_dir=$test3_dir
+build/ARM/gem5.opt $project_dir/system.py --binary=$project_dir/stress_test_ARM --l1i_size=16kB --l1d_size=64kB  --l2_size=256kB --csv_file_suffix=L1_64kB  --csv_save_dir=$test3_dir
+build/ARM/gem5.opt $project_dir/system.py --binary=$project_dir/stress_test_ARM --l1i_size=32kB --l1d_size=128kB --l2_size=256kB --csv_file_suffix=L1_128kB --csv_save_dir=$test3_dir
 
-build/ARM/gem5.opt $project_dir/system.py --binary=$project_dir/stress_test_ARM --l1i_cache_size=16kB --l1d_cache_size=32kB  --l2_cache_size=64kB  --csv_file_suffix=L2_64kB  --csv_save_dir=$test3_dir
-build/ARM/gem5.opt $project_dir/system.py --binary=$project_dir/stress_test_ARM --l1i_cache_size=16kB --l1d_cache_size=32kB  --l2_cache_size=128kB --csv_file_suffix=L2_128kB --csv_save_dir=$test3_dir
-build/ARM/gem5.opt $project_dir/system.py --binary=$project_dir/stress_test_ARM --l1i_cache_size=16kB --l1d_cache_size=32kB  --l2_cache_size=256kB --csv_file_suffix=L2_256kB --csv_save_dir=$test3_dir
-build/ARM/gem5.opt $project_dir/system.py --binary=$project_dir/stress_test_ARM --l1i_cache_size=16kB --l1d_cache_size=32kB  --l2_cache_size=512kB --csv_file_suffix=L2_512kB --csv_save_dir=$test3_dir
+build/ARM/gem5.opt $project_dir/system.py --binary=$project_dir/stress_test_ARM --l1i_size=16kB --l1d_size=32kB  --l2_size=64kB  --csv_file_suffix=L2_64kB  --csv_save_dir=$test3_dir
+build/ARM/gem5.opt $project_dir/system.py --binary=$project_dir/stress_test_ARM --l1i_size=16kB --l1d_size=32kB  --l2_size=128kB --csv_file_suffix=L2_128kB --csv_save_dir=$test3_dir
+build/ARM/gem5.opt $project_dir/system.py --binary=$project_dir/stress_test_ARM --l1i_size=16kB --l1d_size=32kB  --l2_size=256kB --csv_file_suffix=L2_256kB --csv_save_dir=$test3_dir
+build/ARM/gem5.opt $project_dir/system.py --binary=$project_dir/stress_test_ARM --l1i_size=16kB --l1d_size=32kB  --l2_size=512kB --csv_file_suffix=L2_512kB --csv_save_dir=$test3_dir
 
 echo "Test 3 of 6 complete"
 echo ""
@@ -136,15 +136,15 @@ then
     mkdir "$test6_dir"
 fi
 
-build/ARM/gem5.opt $project_dir/system.py --binary=$project_dir/stress_test_ARM --l1i_assoc=1 --l1d_assoc=4 --csv_file_suffix=L1i_assoc_1 --csv_save_dir=$test4_dir
-build/ARM/gem5.opt $project_dir/system.py --binary=$project_dir/stress_test_ARM --l1i_assoc=2 --l1d_assoc=4 --csv_file_suffix=L1i_assoc_2 --csv_save_dir=$test4_dir
-build/ARM/gem5.opt $project_dir/system.py --binary=$project_dir/stress_test_ARM --l1i_assoc=4 --l1d_assoc=4 --csv_file_suffix=L1i_assoc_4 --csv_save_dir=$test4_dir
-build/ARM/gem5.opt $project_dir/system.py --binary=$project_dir/stress_test_ARM --l1i_assoc=6 --l1d_assoc=4 --csv_file_suffix=L1i_assoc_6 --csv_save_dir=$test4_dir
+build/ARM/gem5.opt $project_dir/system.py --binary=$project_dir/stress_test_ARM --l1i_assoc=1 --l1d_assoc=4 --csv_file_suffix=L1i_assoc_1 --csv_save_dir=$test6_dir
+build/ARM/gem5.opt $project_dir/system.py --binary=$project_dir/stress_test_ARM --l1i_assoc=2 --l1d_assoc=4 --csv_file_suffix=L1i_assoc_2 --csv_save_dir=$test6_dir
+build/ARM/gem5.opt $project_dir/system.py --binary=$project_dir/stress_test_ARM --l1i_assoc=4 --l1d_assoc=4 --csv_file_suffix=L1i_assoc_4 --csv_save_dir=$test6_dir
+build/ARM/gem5.opt $project_dir/system.py --binary=$project_dir/stress_test_ARM --l1i_assoc=6 --l1d_assoc=4 --csv_file_suffix=L1i_assoc_6 --csv_save_dir=$test6_dir
 
-build/ARM/gem5.opt $project_dir/system.py --binary=$project_dir/stress_test_ARM --l1i_assoc=2 --l1d_assoc=2  --csv_file_suffix=L1d_assoc_2  --csv_save_dir=$test4_dir
-build/ARM/gem5.opt $project_dir/system.py --binary=$project_dir/stress_test_ARM --l1i_assoc=2 --l1d_assoc=4  --csv_file_suffix=L1d_assoc_4  --csv_save_dir=$test4_dir
-build/ARM/gem5.opt $project_dir/system.py --binary=$project_dir/stress_test_ARM --l1i_assoc=2 --l1d_assoc=8  --csv_file_suffix=L1d_assoc_8  --csv_save_dir=$test4_dir
-build/ARM/gem5.opt $project_dir/system.py --binary=$project_dir/stress_test_ARM --l1i_assoc=2 --l1d_assoc=16 --csv_file_suffix=L1d_assoc_16 --csv_save_dir=$test4_dir
+build/ARM/gem5.opt $project_dir/system.py --binary=$project_dir/stress_test_ARM --l1i_assoc=2 --l1d_assoc=2  --csv_file_suffix=L1d_assoc_2  --csv_save_dir=$test6_dir
+build/ARM/gem5.opt $project_dir/system.py --binary=$project_dir/stress_test_ARM --l1i_assoc=2 --l1d_assoc=4  --csv_file_suffix=L1d_assoc_4  --csv_save_dir=$test6_dir
+build/ARM/gem5.opt $project_dir/system.py --binary=$project_dir/stress_test_ARM --l1i_assoc=2 --l1d_assoc=8  --csv_file_suffix=L1d_assoc_8  --csv_save_dir=$test6_dir
+build/ARM/gem5.opt $project_dir/system.py --binary=$project_dir/stress_test_ARM --l1i_assoc=2 --l1d_assoc=16 --csv_file_suffix=L1d_assoc_16 --csv_save_dir=$test6_dir
 
 echo "Test 6 of 6 complete"
 echo ""
