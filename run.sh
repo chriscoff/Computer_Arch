@@ -100,7 +100,7 @@ then
 fi
 
 build/ARM/gem5.opt $project_dir/system.py --binary=$project_dir/stress_test_ARM --cpu_type=MinorCPU --csv_file_suffix=MinorCPU --csv_save_dir=$test4_dir
-build/ARM/gem5.opt $project_dir/system.py --binary=$project_dir/stress_test_ARM --cpu_type=O3CPU    --csv_file_suffix=MinorCPU --csv_save_dir=$test4_dir
+build/ARM/gem5.opt $project_dir/system.py --binary=$project_dir/stress_test_ARM --cpu_type=O3CPU    --csv_file_suffix=03CPU --csv_save_dir=$test4_dir
 
 echo "Test 4 of 6 complete"
 echo ""
