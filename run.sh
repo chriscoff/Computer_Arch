@@ -138,8 +138,8 @@ fi
 
 build/ARM/gem5.opt $project_dir/system.py --binary=$project_dir/stress_test_ARM --l1i_assoc=1 --l1d_assoc=4 --csv_file_suffix=L1i_assoc_1 --csv_save_dir=$test6_dir
 build/ARM/gem5.opt $project_dir/system.py --binary=$project_dir/stress_test_ARM --l1i_assoc=2 --l1d_assoc=4 --csv_file_suffix=L1i_assoc_2 --csv_save_dir=$test6_dir
+build/ARM/gem5.opt $project_dir/system.py --binary=$project_dir/stress_test_ARM --l1i_assoc=3 --l1d_assoc=4 --csv_file_suffix=L1i_assoc_3 --csv_save_dir=$test6_dir
 build/ARM/gem5.opt $project_dir/system.py --binary=$project_dir/stress_test_ARM --l1i_assoc=4 --l1d_assoc=4 --csv_file_suffix=L1i_assoc_4 --csv_save_dir=$test6_dir
-build/ARM/gem5.opt $project_dir/system.py --binary=$project_dir/stress_test_ARM --l1i_assoc=6 --l1d_assoc=4 --csv_file_suffix=L1i_assoc_6 --csv_save_dir=$test6_dir
 
 build/ARM/gem5.opt $project_dir/system.py --binary=$project_dir/stress_test_ARM --l1i_assoc=2 --l1d_assoc=2  --csv_file_suffix=L1d_assoc_2  --csv_save_dir=$test6_dir
 build/ARM/gem5.opt $project_dir/system.py --binary=$project_dir/stress_test_ARM --l1i_assoc=2 --l1d_assoc=4  --csv_file_suffix=L1d_assoc_4  --csv_save_dir=$test6_dir
